@@ -2,7 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
-require('dotenv').config();
+const userRoutes = require('./routes/userRoutes');
+const slideRoutes = require('./routes/slideRoutes');
+const { authenticateToken } = require('./middleware/auth');
+require('dotenv').config({ path: '.env' });
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -23,6 +26,9 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 // Routes
+app.use('/api/users', userRoutes);
+app.use('/api/slides', authenticateToken, slideRoutes);
+
 app.get('/', (req, res) => {
   res.send('Welcome to Slide App!');
 });
